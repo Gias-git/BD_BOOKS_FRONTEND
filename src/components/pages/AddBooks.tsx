@@ -8,7 +8,6 @@ const AddBooks = () => {
             <div className="w-[500px] rounded-3xl mx-auto border-2 border-gray-200 shadow-md p-10">
                 <AddBooksForm></AddBooksForm>
             </div>
-
         </div>
     );
 };

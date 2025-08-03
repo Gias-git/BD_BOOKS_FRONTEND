@@ -14,12 +14,13 @@ import {
     PaginationPrevious,
 } from "../ui/pagination";
 import { useState } from "react";
-
+import Loader from "../skleton/Loader"
 
 
 const BooksSection = () => {
-
     const [page, setPage] = useState(1);
+    const [deletingBookId, setDeletingBookId] = useState<string | null>(null);
+
     const { data, isLoading } = useGetBooksQuery({ page })
 
     const totalPages = data?.meta?.totalPages || 1;
@@ -27,18 +28,27 @@ const BooksSection = () => {
     const [deleteBook] = useDeleteBookMutation();
 
     const handleDeleteBook = async (id: string) => {
-        await deleteBook(id);
-        toast.success('Wow so easy !');
+        setDeletingBookId(id);
+        const result = await deleteBook(id);
+        setDeletingBookId(null);
+        if (result.data?.message) {
+            toast.success(`${result.data?.message}`);
+        } else {
+            toast.error('Failed to delete the book.');
+            console.error(result.error);
+        }
+
     }
     console.log(data?.data)
     return (
         <div>
             {isLoading ? (
-                <p>Loading...</p>
+                <Loader></Loader>
             ) : (
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead>Available</TableHead>
                             <TableHead>Title</TableHead>
                             <TableHead>Author</TableHead>
                             <TableHead>Genre</TableHead>
@@ -47,7 +57,12 @@ const BooksSection = () => {
                     </TableHeader>
                     <TableBody>
                         {data?.data?.map((book: IBook) => (
-                            <TableRow key={book._id}>
+                            <TableRow key={book._id} >
+                                <TableCell className="w-3"><span
+                                    className={`inline-block w-3 h-3 rounded-full ${book.available ? 'bg-green-500' : 'bg-red-500'
+                                        }`}
+                                    title={book.available ? 'Available' : 'Not Available'}
+                                ></span></TableCell>
                                 <TableCell>{book.title}</TableCell>
                                 <TableCell>{book.author}</TableCell>
                                 <TableCell>{book.genre}</TableCell>
@@ -56,8 +71,15 @@ const BooksSection = () => {
                                         {/* Delete Button */}
 
                                         <AlertDialog>
-                                            <AlertDialogTrigger className='text-black  rounded-lg px-4 py-2'><Trash2>
-                                            </Trash2></AlertDialogTrigger>
+                                            <AlertDialogTrigger className='text-black  rounded-lg px-4 py-2'>
+
+                                                {deletingBookId === book._id ? (
+                                                    <span className="text-sm text-gray-500">Deleting...</span>
+                                                ) : (
+                                                    <Trash2 />
+                                                )}
+
+                                            </AlertDialogTrigger>
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

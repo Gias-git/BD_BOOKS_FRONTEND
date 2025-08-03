@@ -51,18 +51,22 @@ const AddBooksForm = () => {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
 
-        try {
-            const res = await createBook(values);
-            console.log(res);
+        const booksData = {
+            ...values,
+            available: true
+        }
+
+        console.log(booksData);
+        const res = await createBook(booksData);
+        console.log(res);
+
+        if (res.error) {
+            toast.warning(`ISBN Must Unique`)
+        } else {
             form.reset()
             toast.success('Book Added Successfully!');
-        } catch (error) {
-            console.log(error)
-            form.setError("isbn", {
-                type: "manual",
-                message: "ISBN already exists",
-            });
         }
+
     }
 
     return (
@@ -76,7 +80,7 @@ const AddBooksForm = () => {
                         <FormItem>
                             <FormLabel>Title</FormLabel>
                             <FormControl>
-                                <Input placeholder="Book Title" {...field} />
+                                <Input required placeholder="Book Title" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -91,7 +95,7 @@ const AddBooksForm = () => {
                         <FormItem>
                             <FormLabel>Author</FormLabel>
                             <FormControl>
-                                <Input placeholder="Author Name" {...field} />
+                                <Input required placeholder="Author Name" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -133,7 +137,7 @@ const AddBooksForm = () => {
                         <FormItem>
                             <FormLabel>ISBN</FormLabel>
                             <FormControl>
-                                <Input type="number" placeholder="978..." min={0} {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
+                                <Input required type="number" placeholder="978..." min={0} {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -148,7 +152,7 @@ const AddBooksForm = () => {
                         <FormItem>
                             <FormLabel>Description</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="Book description..." {...field} />
+                                <Textarea required placeholder="Book description..." {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -163,7 +167,7 @@ const AddBooksForm = () => {
                         <FormItem>
                             <FormLabel>Copies</FormLabel>
                             <FormControl>
-                                <Input type="number" placeholder="1" min={0} {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
+                                <Input required type="number" placeholder="1" min={0} {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -171,7 +175,7 @@ const AddBooksForm = () => {
                 />
 
                 {/* Available */}
-                <FormField
+                {/* <FormField
                     control={form.control}
                     name="available"
                     render={({ field }) => (
@@ -190,9 +194,9 @@ const AddBooksForm = () => {
                             <FormMessage />
                         </FormItem>
                     )}
-                />
+                /> */}
 
-                <Button type="submit">Submit</Button>
+                <Button className="cursor-pointer" type="submit">Submit</Button>
             </form>
         </Form>
     )

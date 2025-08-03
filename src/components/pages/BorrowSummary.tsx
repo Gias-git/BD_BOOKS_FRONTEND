@@ -8,6 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { useGetBorrowBookQuery } from "@/redux/Api/baseApi";
+import Loader from "../skleton/Loader";
 
 interface BorrowedBook {
     book: {
@@ -17,10 +18,9 @@ interface BorrowedBook {
     totalQuantity: number;
 }
 const BorrowSummary = () => {
-    const { data } = useGetBorrowBookQuery(undefined);
+    const { data, isLoading } = useGetBorrowBookQuery(undefined);
 
     const borrowData: BorrowedBook[] = data?.data ?? [];
-    console.log(data?.data)
     return (
         <div>
             <h1 className="text-4xl font-bold text-center my-20">Borrow Summary</h1>
@@ -35,17 +35,18 @@ const BorrowSummary = () => {
                             <TableHead className="text-right">TOTAL Quantity</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
-
-                        {
+                    <TableBody className="mx-auto">
+                        {isLoading ? (<Loader></Loader>) : (
                             borrowData.map((book, index) => (<TableRow key={index}>
                                 <TableCell className="font-medium">{book.book.title}</TableCell>
                                 <TableCell>{book.book.isbn}</TableCell>
                                 <TableCell className="text-right">{book.totalQuantity}</TableCell>
                             </TableRow>)
                             )
+                        )
+
                         }
-                        {/* { map((book) => )} */}
+
 
                     </TableBody>
                 </Table>

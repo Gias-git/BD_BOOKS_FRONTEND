@@ -2,6 +2,8 @@ import { useGetBookByIdQuery } from "@/redux/Api/baseApi";
 import { useParams } from "react-router";
 import BookDetails from "../BookDetails.tsx/BookDetails";
 import type { IBook } from "@/type";
+import Loader from "../skleton/Loader";
+
 
 
 
@@ -17,7 +19,7 @@ const IndividualBook = () => {
         <>
 
             {
-                isLoading ? 'Loading' : <BookDetails booksData={booksData}></BookDetails>
+                isLoading ? (<Loader></Loader>) : (<BookDetails booksData={booksData}></BookDetails>)
             }
 
         </>

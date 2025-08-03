@@ -41,7 +41,7 @@ export const booksApi = createApi({
                     method: 'DELETE',
                 }
             },
-            // Invalidates all queries that subscribe to this Post `id` only.
+          
             invalidatesTags: ["Books"]
         }),
 

@@ -18,11 +18,14 @@ const bookSlice = createSlice({
         addBook: (state, action: PayloadAction<IBook>) => {
             state.books.push(action.payload)
         },
+        deleteBookLocally: (state, action: PayloadAction<string>) => {
+            state.books = state.books.filter(book => book._id !== action.payload);
+        }
     }
 
 })
 
 export const selectBooks = (state: RootState) => state.books.books;
-export const { addBook } = bookSlice.actions
+export const { addBook, deleteBookLocally } = bookSlice.actions
 
 export default bookSlice.reducer
