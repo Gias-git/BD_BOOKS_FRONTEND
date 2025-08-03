@@ -9,7 +9,7 @@ const AllBooks = () => {
 
     return (
         <div className="">
-            <div>
+            <div className="overflow-hidden">
                 <Slider></Slider>
             </div>
             <div className="w-10/12 mx-auto ">

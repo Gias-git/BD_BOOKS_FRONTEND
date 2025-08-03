@@ -19,7 +19,7 @@ export function Slider() {
         slider3,
     ];
     return (
-        <Carousel className="w-11/12 mx-auto mt-10">
+        <Carousel className="w-11/12  mx-auto mt-10">
             <CarouselContent>
                 {images.map((img, index) => (
                     <CarouselItem key={index}>
@@ -33,8 +33,8 @@ export function Slider() {
                     </CarouselItem>
                 ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious className="hidden md:block" />
+            <CarouselNext className="hidden lg:block" />
         </Carousel>
     )
 }
