@@ -21,6 +21,7 @@ const bookSlice = createSlice({
         deleteBookLocally: (state, action: PayloadAction<string>) => {
             state.books = state.books.filter(book => book._id !== action.payload);
         }
+
     }
 
 })

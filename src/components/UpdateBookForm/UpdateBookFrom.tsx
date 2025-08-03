@@ -13,9 +13,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Textarea } from "../ui/textarea"
-import { useUpdateBookMutation } from "@/redux/Api/baseApi"
+// import { useUpdateBookMutation } from "@/redux/Api/baseApi"
 import type { IBook } from "@/type"
 import { DialogClose } from "../ui/dialog"
+import { toast } from "react-toastify"
 
 const genreEnum = ['FICTION', 'NON_FICTION', 'SCIENCE', 'HISTORY', 'BIOGRAPHY', 'FANTASY'] as const;
 type Genre = typeof genreEnum[number];
@@ -32,10 +33,11 @@ const formSchema = z.object({
 
 
 interface bookProps {
-    book: IBook
+    book: IBook,
+    updateBook: (data: any) => Promise<any>
 }
 
-const UpdateBookFrom = ({ book }: bookProps) => {
+const UpdateBookFrom = ({ book, updateBook }: bookProps) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         mode: "onSubmit",
@@ -50,29 +52,28 @@ const UpdateBookFrom = ({ book }: bookProps) => {
         },
     });
 
-    const [updateBook, { data }] = useUpdateBookMutation();
-
-    console.log(data)
 
 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
 
-        try {
-            const bookData = {
-                ...values,
-                id: book._id
-            }
-            const res = await updateBook(bookData);
-            console.log(res);
-            form.reset()
-        } catch (error) {
-            console.log(error)
-            form.setError("isbn", {
-                type: "manual",
-                message: "ISBN already exists",
-            });
+        const booksData = {
+            ...values,
+            available: true,
+            id: book._id
         }
+
+        console.log(booksData);
+        const res = await updateBook(booksData);
+        console.log(res);
+
+        if (res.error) {
+            toast.warning(`ISBN Must Unique`)
+        } else {
+            form.reset()
+            toast.success('Book Updated Successfully!');
+        }
+
     }
 
     return (
@@ -180,30 +181,12 @@ const UpdateBookFrom = ({ book }: bookProps) => {
                     )}
                 />
 
-                {/* Available */}
-                {/* <FormField
-                    control={form.control}
-                    name="available"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Available</FormLabel>
-                            <FormControl>
-                                <select
-                                    className="border rounded-md px-3 py-2"
-                                    value={field.value ? "true" : "false"}
-                                    onChange={(e) => field.onChange(e.target.value === "true")}
-                                >
-                                    <option value="true">Yes</option>
-                                    <option value="false">No</option>
-                                </select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                /> */}
+
 
                 <DialogClose asChild>
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">
+                        Submit
+                    </Button>
                 </DialogClose>
 
             </form>
